@@ -1,3 +1,3 @@
 ###数据类型
 
-![image-20240519191033949](/Users/admin/Library/Application%20Support/typora-user-images/image-20240519191033949.png)
+<img src="https://cdn.jsdelivr.net/gh/loading-II/One-Note@master/pic_go_img/image-20240519191615920.png" alt="image-20240519191615920" style="zoom:50%;" />

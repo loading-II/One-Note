@@ -1,10 +1,10 @@
-###路由管理
+### 路由管理
 
 flutter 中的路由(route) 等同于 Android 中的Activity，等同于WEB单页面中的route概念，等同于IOS中的 ViewController的概念，所谓的路由管理实际上就是页面之间的跳转管理，也称之为导航管理，和移动端的导航管理类似，都为维护一个路由栈，入栈，出栈的操作。
 
 Navigator: 路由管理组件，通过一个栈管理活动的路由集合，常用方法如下：
 
-#####1、动态路由：无需注册直接跳转
+##### 1、动态路由：无需注册直接跳转
 
 ```dart
 1、将给定的路由入栈，打开新界面：
@@ -39,7 +39,7 @@ Navigator: 路由管理组件，通过一个栈管理活动的路由集合，常
   如果，将 (route) => route.settings.name == '/' 更换成 (route) => false ，将不会释放任何 Page页面
 ```
 
-#####2、静态路由：需要注册的路由
+##### 2、静态路由：需要注册的路由
 
 2.1、路由注册
 
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
 因为动态路由详细介绍，这里不再具体介绍静态路由的细节了
 ```
 
-#####3、路由间传参
+##### 3、路由间传参
 
 ```dart
 1、动态路由传参，直接使用 route 的构造函数即可
@@ -91,7 +91,7 @@ Navigator.pushReplacementNamed(context, RouteConfiguration.homePage, arguments: 
 final args = ModalRoute.of(context)?.settings.arguments;
 ```
 
-#####4、路由钩子
+##### 4、路由钩子
 
 ```
 路由钩子，适合的场景是 登录拦截又或者其他XX拦截，看下面代码
@@ -128,7 +128,7 @@ MaterialApp 有onGenerateRoute 属性，当通过静态路由打开指定Name的
 故建议使用路由钩子代替路由表，进行统一管理
 ```
 
-#####5、路由切换动画
+##### 5、路由切换动画
 
 ```
 切换动画，可以代来用户体验的提升

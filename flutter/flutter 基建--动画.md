@@ -86,23 +86,69 @@ _animation
 这里定义了在2秒内匀速变化的0--1之间的数值，那么使用时候，便可根据此区间的数据进行自定义使用
 ```
 
-##### 扩展：
+##### 实现动画的不同方式
+
+方式一: 通过 Animation添加监听每一帧变化，进行setState刷新UI
 
 ```
-flutter 内置提供了一些显示动画组件，比如缩放动画组件，替换上面的实现如下，无需在进行setState刷新界面了
-ScaleTransition(
-              scale: _animation,
-              child: const SizedBox(
-                width: 50,
-                height: 50,
-                child: Icon(
-                  Icons.ac_unit,
-                  size: 50,
-                ),
-              ),
-)
-类似 ScaleTransition 还有FadeTransition、AlignTransition、SizeTransition 以及 AnimatedBuilder、
+_controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
+_animation = Tween<double>(begin: 50, end: 100).animate(_controller)
+..addListener(() {
+   print("value=======>${_animation.value}");
+     setState(() {}); // 更新UI
+})
+..addStatusListener((status) {
+     debugPrint('status：$status'); // 监听动画执行状态
+});
+
+widget：
+Icon(Icons.ac_unit,size: _animation.value)
+///缺点：每一个动画实现起来比较繁琐，假设UI内有N多动画，那么代码会很不优雅，且会有多次setState刷新
 ```
+
+方式二：通过AnimatedWidget进行简化
+
+```
+class AnimatedImage extends AnimatedWidget {
+  const AnimatedImage({
+    super.key,
+    required Animation<double> animation,
+  }) : super(listenable: animation);
+
+  @override
+  Widget build(BuildContext context) {
+    final animation = listenable as Animation<double>;
+    return Center(
+      child: Icon(Icons.ac_unit, size: animation.value),
+    );
+  }
+}
+
+widget:
+AnimatedImage(animation: _animation),
+//上述代码，将路由中的widget，迁移出独立封装，避免了在路由中进行监听并进行不断setState地刷新操作
+//查看 AnimatedWidget 源码，其实是在内部实现了监听+setState刷新机制，和方式一实现是一毛一样的
+//缺点，如果每一个动画，都要独立封装的话，其实还可以再次优化
+```
+
+##### 方式三：通过 AnimatedBuilder
+
+```dart
+AnimatedBuilder(animation: _animation,
+   builder: (context, child) {
+      return SizedBox(
+        width: _animation.value,
+        height: _animation.value,
+        child: Icon(Icons.ac_unit, size: _animation.value));
+})
+//如此算是比较优化的解决了动画的视线问题
+```
+
+##### 扩展
+
+Flutter中正是通过这种方式封装了很多动画，如：FadeTransition、ScaleTransition、SizeTransition等，很多时候都可以复用这些预置的过渡类。
+
+
 
 
 

@@ -8,7 +8,7 @@
 
 ##### Android部分：
 
-###### 1、四大组件***activity***、***service***、broadcast、contentProvider 
+###### 1、四大组件***activity***、***service***、broadcast、contentProvider 、Fragment
 
 ###### 2、常用布局，linearlayout、relateLayout、tableLayout、frameLayout、***constrainLayout***等等
 
@@ -16,11 +16,13 @@
 
 ###### 4、消息通信 ***Handler*** 机制，Context
 
-###### 5、AMS、WMS、PMS、binder机制
+###### 5、AMS、WMS、PMS、
+
+###### 6、binder机制（[Android跨进程通信：图文详解 Binder机制 原理_android binder-CSDN博客](https://blog.csdn.net/carson_ho/article/details/73560642)）
 
 ##### Android--jetpack部分：
 
-###### liveData、viewmodel、databinding、lifecycle、datastore
+###### liveData、viewmodel、databinding、lifecycle、datastore、Navigation
 
 ##### kotlin部分
 

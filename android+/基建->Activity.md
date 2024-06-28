@@ -103,19 +103,83 @@ flag_activity_single_top: 等同于 singleTop
 flag_activity_clear_top 一般多和 flag_activity_new_task 组合使用，此时等同于 singleTask
 ```
 
-###### 10、window、Activity 、View 之间的关系
+###### 10、Activity、window、decoreview关系
 
 ```
 Activity是基于模版模式+组合模式的实现，目的是摒弃后台机制，留给开发者一个简单干净清爽的能够快速上手实现界面开发的实现子类模版；
 Activity的职责边界是：包括但不限于window，它的职责对内是生命周期管理，对外是界面间的管理
 ```
 
+10.1: activity.attach中实例化window的实现类phonewindow，使Activity和phonewindow以及windowManager之间产生了关联
+
+```
+//TODO: 这里可以用于解答：Activity和window产生关联的位置
+// 1.创建了PhoneWindow对象，在Activity中持有了Window。
+mWindow = new PhoneWindow(this, window, activityConfigCallback);//跟进window的实例化去看一看
+mWindow.setWindowControllerCallback(this);
+// 2.将 Activity 作为参数传递给 Window，所以在 Window 中持有了 Activity 。
+mWindow.setCallback(this);
+……………………省略代码……………………
+//Activity持有WindowManage
+mWindowManager = mWindow.getWindowManager();
+```
+
+10.2：DecorView的初始化流程
+
+```
+Activity.onCreate生命周期内，通过setConetntView(R.layout.xx) 触发DecorView的初始化工作
+@Override
+    public void setContentView(int layoutResID) {
+        if (mContentParent == null) {
+            installDecor();
+        } else
+        …………………………省略部分代码
+    }
+跟进：installDecor
+private void installDecor() {
+        mForceDecorInstall = false;
+        if (mDecor == null) {
+            mDecor = generateDecor(-1);
+        }
+继续跟进：generateDecor ===>实质是 new DecorView(context, featureId, this, getAttributes());
+根据代码显示：DecorView 的实质是一个FrameLayout，  第三个参数 this 便是 phonewindow 意味着和持有者产生了关联
+```
+
+10.3：显示
+
+```
+前面我们了解到 
+1、Activity.attach创建了 phoneWindow
+2、activity.onCreate->setContentView  创建DecorView(FrameLayout) 并将对应的布局文件转换成视图树加载到 DecorView中
+3、下面看如何去显示出来，具体看 ActivityThread. handleResumeActivity() 也就是 Activity.onResume之后，才是可见的原因
+```
+
+10.4：延伸一个问题，那就是为什么在onCreate 和 onStart中，无法获取View的宽高，又应该如何获取View的宽高
+
+```
+根据上面描述，attach初始化了 phonewindow，onCreate（setContent）才创建window内的decorView，根据FrameWork层源码看到，等到onResume之后，decoreView 才加载通过WindowManage才加载到Window中，并设置了可见，
+
+好的，那么如何在onCreate 和 onStart中获取View的宽高呢？
+可以通过获取 ViewTreeObsever监听布局完成，获取对应View的宽高 这是监听View布局完成的监听操作
+可以通过View.post(Runnable)的方式，进行获取View的宽高
+推荐第二种方式，View.post方案，实际原理还是handler机制的原理
+```
+
+10.5：延伸介绍下 ViewRootImpl，因为 View.post(Runnable) 获取宽高
+
+```
+```
+
+
+
+
+
 ###### 11、activity 的任务栈和回退栈的设计
 
 ```
 ```
 
-###### 12、时间分发机制
+###### 12、ActivityRecorder、TaskRecorder………………
 
 
 
